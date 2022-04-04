@@ -433,3 +433,129 @@ CONTAINER ID        IMAGE               COMMAND             CREATED             
 
 ```
 
+### Port forwarding with docker host 
+
+<img src="portf.png">
+
+### compose example 
+
+```
+ cat  docker-compose.yaml 
+version: '3.8' # compsoe file version 2.x / 3.x is automatically creating docker new bridge 
+services:
+ ashudb: # backend db container info 
+  image: mysql
+  container_name: ashudbc1 
+  restart: always
+  environment:
+   MYSQL_ROOT_PASSWORD: "Oracle098#"
+  command: --default-authentication-plugin=mysql_native_password
+
+ ashuwebapp: # webapp Info 
+  image: adminer
+  container_name: ashuwebc1
+  restart: always 
+  depends_on:
+  - ashudb   # wait for container to up and accept traffic 
+  ports:
+  - "1234:8080"
+[ashu@docker-host ashuapp]$ docker-compose up -d
+Creating network "ashuapp_default" with the default driver
+Creating ashudbc1 ... done
+Creating ashuwebc1 ... done
+[ashu@docker-host ashuapp]$ docker-compose ps
+  Name                 Command               State           Ports         
+---------------------------------------------------------------------------
+ashudbc1    docker-entrypoint.sh --def ...   Up      3306/tcp, 33060/tcp   
+ashuwebc1   entrypoint.sh docker-php-e ...   Up      0.0.0.0:1234->8080/tcp
+
+```
+
+### down 
+
+```
+ docker-compose down 
+Stopping ashuwebc1 ... done
+Stopping ashudbc1  ... done
+Removing ashuwebc1 ... done
+Removing ashudbc1  ... done
+Removing network ashuapp_default
+
+```
+
+### docker image sharing 
+
+<img src="imgshare.png">
+
+### python flask webapp code 
+
+```
+ls
+Dockerfile  hello.py  requirements.txt
+[ashu@docker-host images]$ cat  hello.py 
+from flask import Flask 
+app = Flask(__name__) 
+
+@app.route('/') 
+def hello(): 
+	return "welcome to the flask tutorials"
+
+
+
+if __name__ == "__main__": 
+	app.run(host ='0.0.0.0', port = 5000, debug = True) 
+[ashu@docker-host images]$ cat requirements.txt 
+flask
+[ashu@docker-host images]$ cat  Dockerfile 
+FROM python
+COPY . /app
+WORKDIR /app
+RUN pip install -r requirements.txt 
+EXPOSE 5000
+ENTRYPOINT [ "python" ] 
+CMD [ "hello.py" ] 
+
+
+```
+
+### taking backup of docker image 
+
+```
+docker  save  -o webapp.tar  dad5512a6de3
+[ashu@docker-host images]$ ls
+Dockerfile  hello.py  requirements.txt  webapp.tar
+```
+
+### transfer file from  old docker host to new docker host using any FTP method 
+
+```
+ls
+Dockerfile  hello.py  requirements.txt  webapp.tar
+[ashu@docker-host images]$ scp  webapp.tar  test@18.214.154.73:
+The authenticity of host '18.214.154.73 (18.214.154.73)' can't be established.
+ECDSA key fingerprint is SHA256:2iJHUDm2ruJ+7DqoU754iNNMN2hiTR8Y9AnlK3ESFFI.
+ECDSA key fingerprint is MD5:f8:bf:ec:1c:a1:cb:59:1b:41:f9:84:b8:4c:ab:1a:b3.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added '18.214.154.73' (ECDSA) to the list of known hosts.
+test@18.214.154.73's password: 
+webapp.tar                                             
+```
+### oN the new docker host 
+
+```
+ ls
+webapp.tar
+[test@ip-172-31-80-255 ~]$ docker  images
+REPOSITORY   TAG       IMAGE ID   CREATED   SIZE
+[test@ip-172-31-80-255 ~]$ docker  load -i webapp.tar 
+a1c01e366b99: Loading layer [==================================================>]  5.855MB/5.855MB
+Loaded image ID: sha256:dad5512a6de319266e17d48ad4d667032fe9419e2ff345e5340956f84603cea4
+[test@ip-172-31-80-255 ~]$ docker images
+REPOSITORY   TAG       IMAGE ID       CREATED       SIZE
+<none>       <none>    dad5512a6de3   4 hours ago   5.57MB
+[test@ip-172-31-80-255 ~]$ docker  tag dad5512a6de3  alpine:v1 
+[test@ip-172-31-80-255 ~]$ docker images
+REPOSITORY   TAG       IMAGE ID       CREATED       SIZE
+alpine       v1        dad5512a6de3   5 hours ago   5.57MB
+```
+
