@@ -168,3 +168,225 @@ ls: cannot open directory .: No such process
 bin    dev    etc    home   lib    media  mnt    opt    proc   root   run    sbin   srv    sys    tmp    usr    var
 ```
 
+### Docker networking -- 
+
+<img src="dnet.png">
+### remove all containers 
+
+```
+docker  rm  $(docker  ps -aq) -f
+ddbe5d93bdc1
+441bfeed3284
+661b529c57a1
+55c32ca50e0a
+
+```
+
+### docker network listing 
+
+```
+docker  network  ls
+NETWORK ID          NAME                DRIVER              SCOPE
+a33c26322e2f        bridge              bridge              local
+f7b81163f0b8        host                host                local
+6b7f3e5566da        none                null                local
+[ashu@docker-host ~]$ 
+[ashu@docker-host ~]$ docker  network  inspect  a33c26322e2f
+[
+    {
+        "Name": "bridge",
+        "Id": "a33c26322e2f5ebfb2fa1eff0d3f2dc40239f08c424e55dabc5082d940334545",
+        "Created": "2022-04-04T05:00:52.072497944Z",
+        "Scope": "local",
+        "Driver": "bridge",
+        "EnableIPv6": false,
+        "IPAM": {
+            "Driver": "default",
+            "Options": null,
+            "Config": [
+                {
+                    "Subnet": "172.17.0.0/16"
+                }
+            ]
+        },
+
+```
+
+### checking container connected to the bridge 
+
+```
+docker  network inspect a33c26322e2f  
+[
+    {
+        "Name": "bridge",
+        "Id": "a33c26322e2f5ebfb2fa1eff0d3f2dc40239f08c424e55dabc5082d940334545",
+        "Created": "2022-04-04T05:00:52.072497944Z",
+        "Scope": "local",
+        "Driver": "bridge",
+        "EnableIPv6": false,
+        "IPAM": {
+            "Driver": "default",
+            "Options": null,
+            "Config": [
+                {
+                    "Subnet": "172.17.0.0/16"
+                }
+            ]
+        },
+        "Internal": false,
+        "Attachable": false,
+        "Ingress": false,
+        "ConfigFrom": {
+            "Network": ""
+        },
+        "ConfigOnly": false,
+        "Containers": {
+            "0eb04b89fa28581c44ffd9e179c15306299753b0ebc90c359102726ff112d7a3": {
+                "Name": "ronic1",
+                "EndpointID": "75ba3066570f322f1dae9bf370a2771fa5099df572fc21a88ac80b6e9ffc4ff1",
+                "MacAddress": "02:42:ac:11:00:06",
+                "IPv4Address": "172.17.0.6/16",
+                "IPv6Address": ""
+            },
+            "2ad35568e1df917f5b74f8bae354220062baae83f1d5329ad16825a20062398b": {
+                "Name": "devv",
+                "EndpointID": "b9e7124b7d6c15f13a32cb6136a796177ff9b14408c02633bd076d08e4fc7fc9",
+                "MacAddress": "02:42:ac:11:00:03",
+                "IPv4Address": "172.17.0.3/16",
+
+
+```
+
+### playing with Inspect 
+
+```
+docker  inspect  ashuc1   --format='{{.Id}}'
+9ae4a68b29ebfd9a9fa0a70a038d85b621e3519058999abf29511d9fae20b034
+[ashu@docker-host ~]$ docker  inspect  ashuc1   --format='{{.State.Status}}'
+running
+[ashu@docker-host ~]$ docker  inspect  ashuc1   --format='{{.NetworkSettings.IPAddress}}'
+172.17.0.2
+[ashu@docker-host ~]$ docker  inspect  ashuc1   --format='{{.NetworkSettings.IPAddress}}'  --format='{{.Id}}'
+9ae4a68b29ebfd9a9fa0a70a038d85b621e3519058999abf29511d9fae20b034
+[ashu@docker-host ~]$ docker  inspect  ashuc1   --format='{{.NetworkSettings.IPAddress}}  {{.Id}}' 
+172.17.0.2  9ae4a68b29ebfd9a9fa0a70a038d85b621e3519058999abf29511d9fae20b034
+[ashu@docker-host ~]$ 
+[ashu@docker-host ~]$ 
+[ashu@docker-host ~]$ 
+[ashu@docker-host ~]$ docker  ps -q
+64b31538b53e
+701a8c63c913
+0eb04b89fa28
+3a1f2992a1d7
+dae68dfbe0ca
+2ad35568e1df
+9ae4a68b29eb
+[ashu@docker-host ~]$ for  i in  `docker  ps -q`
+> do
+> docker  inspect  $i  --format='{{.NetworkSettings.IPAddress}}  {{.Id}}'
+> sleep 1 
+> done
+172.17.0.8  64b31538b53e7beb9baf23143ffac464117422f7c86229b6a3e8a2ddb4e4c4be
+172.17.0.7  701a8c63c9134b28cca153a54df101f05cc5dd780510da68218ccea4ee84fdb3
+172.17.0.6  0eb04b89fa28581c44ffd9e179c15306299753b0ebc90c359102726ff112d7a3
+172.17.0.5  3a1f2992a1d7fff295f50c4bf0ab25e1b51df834f6b07d4f90b49dbf7b625fed
+172.17.0.4  dae68dfbe0ca5859e278d3b7b18c235cd8f5f6ee5607e1cd0589e4d3e59fe8ee
+172.17.0.3  2ad35568e1df917f5b74f8bae354220062baae83f1d5329ad16825a20062398b
+172.17.0.2  9ae4a68b29ebfd9a9fa0a70a038d85b621e3519058999abf29511d9fae20b034
+```
+
+### IN default container bridge only IP based communication is allowed not Name based 
+
+```
+docker  inspect  aksh1  --format='{{.NetworkSettings.IPAddress}}'
+172.17.0.8
+[ashu@docker-host ~]$ docker  exec  -it  ashuc1  sh 
+/ # ping  172.17.0.8
+PING 172.17.0.8 (172.17.0.8): 56 data bytes
+64 bytes from 172.17.0.8: seq=0 ttl=64 time=0.118 ms
+64 bytes from 172.17.0.8: seq=1 ttl=64 time=0.092 ms
+64 bytes from 172.17.0.8: seq=2 ttl=64 time=0.097 ms
+64 bytes from 172.17.0.8: seq=3 ttl=64 time=0.090 ms
+^C
+--- 172.17.0.8 ping statistics ---
+4 packets transmitted, 4 packets received, 0% packet loss
+round-trip min/avg/max = 0.090/0.099/0.118 ms
+/ # ping  aksh1
+ping: bad address 'aksh1'
+/ # exit
+
+```
+
+### creating bridge 
+
+```
+docker  network  create  ashubr1 
+1d1e5ad1e29baf2eae76bde21292e1c9f7416022e60a98e9bc4673f00ed002f1
+[ashu@docker-host ~]$ docker  network  create  ashubr2  --subnet  192.168.1.0/24  
+e4208088c43e80d4bda5a8b6cf7b9c0d251e3cc4866beda136625a3f5df1a762
+[ashu@docker-host ~]$ docker  network  ls
+NETWORK ID          NAME                DRIVER              SCOPE
+1d1e5ad1e29b        ashubr1             bridge              local
+e4208088c43e        ashubr2             bridge              local
+a33c26322e2f        bridge              bridge              local
+dbda8a7b37b0        devv1               bridge              local
+f7b81163f0b8        host                host                local
+9afda77bf7d7        natrajbr1           bridge              local
+35d0a520be3d        natrajbr2           bridge              local
+6b7f3e5566da        none                null                local
+ce15d4d341a9        ronic1              bridge              local
+b13741763bcd        ronic2              bridge              local
+[ashu@docker-host ~]$ docker  network inspect ashubr1 
+[
+    {
+        "Name": "ashubr1",
+        "Id": "1d1e5ad1e29baf2eae76bde21292e1c9f7416022e60a98e9bc4673f00ed002f1",
+        "Created": "2022-04-04T06:32:39.468315897Z",
+        "Scope": "local",
+        "Driver": "bridge",
+        "EnableIPv6": false,
+        "IPAM": {
+            "Driver": "default",
+            "Options": {},
+            "Config": [
+                {
+                    "Subnet": "172.18.0.0/16",
+                    "Gateway": "172.18.0.1"
+
+
+```
+
+### docker network cross communication is blocked by default 
+
+```
+ docker  run -itd --name ashuc3  --network  ashubr1  alpine  
+33d0e95cafe848f9fb0c2ca2c7940b4e4eba1d72c5a5b5c2e7582e22edbb405a
+[ashu@docker-host ~]$ 
+[ashu@docker-host ~]$ docker  exec -it  ashuc3  sh 
+/ # ping  172.17.0.2
+PING 172.17.0.2 (172.17.0.2): 56 data bytes
+^C
+--- 172.17.0.2 ping statistics ---
+3 packets transmitted, 0 packets received, 100% packet loss
+
+```
+
+### custom bridge DNS is alread there 
+
+```
+ docker  run -itd --name ashuc4  --network  ashubr1  alpine  
+548dbdcbeffa5a6dae4b4407a15be32f24702356e2274b70b121caa464d5b473
+[ashu@docker-host ~]$ 
+[ashu@docker-host ~]$ 
+[ashu@docker-host ~]$ docker  exec -it  ashuc3  sh 
+/ # ping ashuc4
+PING ashuc4 (172.18.0.3): 56 data bytes
+64 bytes from 172.18.0.3: seq=0 ttl=64 time=0.108 ms
+64 bytes from 172.18.0.3: seq=1 ttl=64 time=0.102 ms
+64 bytes from 172.18.0.3: seq=2 ttl=64 time=0.112 ms
+^C
+--- ashuc4 ping statistics ---
+3 packets transmitted, 3 packets received, 0% packet loss
+round-trip min/avg/max = 0.102/0.107/0.112 ms
+
+```
