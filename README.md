@@ -390,3 +390,46 @@ PING ashuc4 (172.18.0.3): 56 data bytes
 round-trip min/avg/max = 0.102/0.107/0.112 ms
 
 ```
+
+### COntainer with no network 
+
+```
+docker  run -it --rm  --network none  alpine 
+/ # 
+/ # ifconfig 
+lo        Link encap:Local Loopback  
+          inet addr:127.0.0.1  Mask:255.0.0.0
+          UP LOOPBACK RUNNING  MTU:65536  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000 
+          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
+
+/ # ping 172.17.0.1
+PING 172.17.0.1 (172.17.0.1): 56 data bytes
+ping: sendto: Network unreachable
+/ # ping google.com 
+^C
+/ # exit
+
+```
+
+### restart policy in container 
+
+### create a new container then apply restart policy 
+
+```
+~]$ docker run -itd --name x1  --restart  always  alpine 
+4a0f4032db2329b2b6dd5b2f65b6a62398a9be1d5293c96423720435f2f5613c
+```
+## update restart policy in an existing container 
+
+```
+ocker  update  aksh2  --restart always 
+aksh2
+[ashu@docker-host ~]$ docker  ps 
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+6d782fe605de        alpine              "/bin/sh"           18 minutes ago      Up 5 seconds                            aksh2
+
+```
+
