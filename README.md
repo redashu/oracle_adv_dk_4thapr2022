@@ -656,4 +656,10 @@ e8635f15dd3d: Pushed
    67  docker  exec -it  ashuc1  sh 
    68  docker run -itd --name ashuc2  --network  ashubrx33  --ip 192.168.1.201  nginx 
 ```
+### portainer webui 
+
+```
+docker run -itd  --name webui -p 9000:9000 -v /var/run/docker.sock:/var/run/docker.sock portainer/portainer 
+```
+
 
