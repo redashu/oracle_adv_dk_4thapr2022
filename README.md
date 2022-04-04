@@ -638,4 +638,22 @@ e8635f15dd3d: Pushed
    16  docker  logout  phx.ocir.io
 ```
 
+### Macvlan 
+
+<img src="macvlan.png">
+
+
+### implementation 
+
+```
+ 60  docker  network  create  -d macvlan --subnet 192.168.1.0/24  --gateway 192.168.1.254  -o parent=ens33   ashubrx33 
+   61  ifconfig 
+   62  history 
+   63  docker network  ls
+   64  docker run -itd --name ashuc1  --network  ashubrx33  --ip 192.168.1.200 alpine 
+   65  docker  p
+   66  docker  ps
+   67  docker  exec -it  ashuc1  sh 
+   68  docker run -itd --name ashuc2  --network  ashubrx33  --ip 192.168.1.201  nginx 
+```
 
