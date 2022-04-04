@@ -559,3 +559,83 @@ REPOSITORY   TAG       IMAGE ID       CREATED       SIZE
 alpine       v1        dad5512a6de3   5 hours ago   5.57MB
 ```
 
+### image registry 
+
+<img src="reg.png">
+
+### pushing image to docker hub 
+
+```
+149  docker  tag  ashupyweb:v1   docker.io/dockerashu/ashimgapp:v001 
+  150  docker  images
+  151  history 
+  152  docker  login 
+  153  docker push  docker.io/dockerashu/ashimgapp:v001
+  154  history 
+[ashu@docker-host images]$ docker logout 
+Removing login credentials for https://index.docker.io/v1/
+
+```
+
+### from New dockr host we pulled it 
+
+```
+docker pull docker.io/dockerashu/ashimgapp:v001
+v001: Pulling from dockerashu/ashimgapp
+dbba69284b27: Pull complete 
+9baf437a1bad: Pull complete 
+6ade5c59e324: Pull complete 
+b19a994f6d4c: Pull complete 
+8fc2294f89de: Pull complete 
+9dc715194c21: Pull complete 
+2bb16cc2dfa7: Pull complete 
+4bc546858b13: Pull complete 
+251bc2e5e4fa: Pull complete 
+6dce08bed5c3: Pull complete 
+f51a3031b89b: Pull complete 
+Digest: sha256:c1d83fc79120abb63f9f8f9c6dbc48fb93272473dc4bab3c7f2acc5d9dc0a661
+Status: Downloaded newer image for dockerashu/ashimgapp:v001
+docker.io/dockerashu/ashimgapp:v001
+[test@ip-172-31-80-255 ~]$ docker images
+REPOSITORY             TAG       IMAGE ID       CREATED          SIZE
+dockerashu/ashimgapp   v001      b6a315e81bb6   26 minutes ago   931MB
+alpine                 v1        dad5512a6de3   5 hours ago      5.57MB
+[test@ip-172-31-80-255 ~]$ 
+
+```
+
+### PUshing image to OCR 
+
+```
+ docker  tag  ashupyweb:v1    phx.ocir.io/axmbtg8judkl/helloapp:v007  
+[ashu@docker-host images]$ 
+[ashu@docker-host images]$ docker  login  phx.ocir.io  
+Username: axmbtg8judkl/learntechbyme@gmail.com
+Password: 
+Error response from daemon: Get "https://phx.ocir.io/v2/": unknown: Unauthorized
+[ashu@docker-host images]$ docker  login  phx.ocir.io  
+Username: axmbtg8judkl/learntechbyme@gmail.com
+Password: 
+WARNING! Your password will be stored unencrypted in /home/ashu/.docker/config.json.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+
+Login Succeeded
+[ashu@docker-host images]$ docker  push phx.ocir.io/axmbtg8judkl/helloapp:v007
+The push refers to repository [phx.ocir.io/axmbtg8judkl/helloapp]
+cca3886cede5: Pushed 
+6d6cc5618a86: Pushed 
+e8635f15dd3d: Pushed 
+147cd3e8f800: Pushed 
+
+```
+### From new docker host we can pull it 
+
+```
+3  docker  login phx.ocir.io -u axmbtg8judkl/learntechbyme@gmail.com  
+   14  docker pull phx.ocir.io/axmbtg8judkl/helloapp:v007
+   15  docker  images
+   16  docker  logout  phx.ocir.io
+```
+
+
