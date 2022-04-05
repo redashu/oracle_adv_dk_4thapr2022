@@ -149,4 +149,38 @@ To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
 
 <img src="pod.png">
 
+## kubernetes api resources 
 
+<img src="resouces.png">
+
+### first poD file 
+
+```
+apiVersion: v1 # requesting to apiversion v1 
+kind: Pod # type of resource under above define apiVersion 
+metadata: # info about resouces like name
+  name: ashupod-007  # name of my POd 
+spec: # info about your container app 
+  containers:
+  - name: ashuc1 # name of container inside pod 
+    image: nginx # name of image from Docker hub 
+    ports:
+    - containerPort: 80  # app port that will be used by container 
+
+```
+
+### testing and deploy POd 
+
+```
+kubectl create  -f  ashupod1.yaml --dry-run=client 
+pod/ashupod-007 created (dry run)
+fire@ashutoshhs-MacBook-Air containers_apps % 
+fire@ashutoshhs-MacBook-Air containers_apps % kubectl create  -f  ashupod1.yaml                  
+pod/ashupod-007 created
+fire@ashutoshhs-MacBook-Air containers_apps % kubectl  get  pods
+NAME               READY   STATUS    RESTARTS   AGE
+ashupod-007        1/1     Running   0          60s
+natarajanpod-007   1/1     Running   0          37s
+rameshpod-007      1/1     Running   0          41s
+
+```
