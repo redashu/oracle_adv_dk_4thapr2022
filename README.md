@@ -48,6 +48,12 @@ REPOSITORY                           TAG       IMAGE ID       CREATED         SI
 
 <img src="orch.png">
 
+## k8s architecture Understanding 
+
+### Level 1 arch of k8s 
+
+<img src="k8s1.png">
+
 
 
 
