@@ -346,7 +346,7 @@ ashupod2        1/1     Running   0          4s
 
 ### deleting pod using file 
 
-```
+```p
  kubectl delete  -f  ashupod2.yaml
 pod "ashupod2" deleted
 ```
@@ -355,5 +355,18 @@ pod "ashupod2" deleted
 ## scaling at POd level 
 
 <img src="podscale.png">
+
+## Container network models 
+
+<img src="cnivscnm.png">
+
+### k8s can use any CRE 
+
+<img src="cre1.png">
+
+### to implement CNI we use cni plugins 
+
+<img src="cnip.png">
+
 
 
