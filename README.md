@@ -351,3 +351,9 @@ ashupod2        1/1     Running   0          4s
 pod "ashupod2" deleted
 ```
 
+
+## scaling at POd level 
+
+<img src="podscale.png">
+
+
