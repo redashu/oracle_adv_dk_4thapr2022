@@ -54,6 +54,99 @@ REPOSITORY                           TAG       IMAGE ID       CREATED         SI
 
 <img src="k8s1.png">
 
+### LEvel 2 -- Minion side components 
 
+<img src="minion.png">
+
+### LEvel 3  master node component -- kube-apiServer. --
+
+<img src="apis.png">
+
+### client to cluster / master node connection --
+
+```
+kubectl  version 
+Client Version: version.Info{Major:"1", Minor:"23", GitVersion:"v1.23.5", GitCommit:"c285e781331a3785a7f436042c65c5641ce8a9e9", GitTreeState:"clean", BuildDate:"2022-03-16T15:58:47Z", GoVersion:"go1.17.8", Compiler:"gc", Platform:"darwin/amd64"}
+The connection to the server localhost:8080 was refused - did you specify the right host or port?
+fire@ashutoshhs-MacBook-Air ~ % 
+fire@ashutoshhs-MacBook-Air ~ % 
+fire@ashutoshhs-MacBook-Air ~ % kubectl  cluster-info 
+
+To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+The connection to the server localhost:8080 was refused - did you specify the right host or port?
+fire@ashutoshhs-MacBook-Air ~ % 
+
+```
+### location of auth file in master node / cluster side 
+
+```
+[root@control-plane ~]# cd  /etc/kubernetes/
+[root@control-plane kubernetes]# ls
+admin.conf
+```
+
+### from Client / admin /dev 
+
+```
+kubectl  version   --kubeconfig  admin.conf.txt 
+Client Version: version.Info{Major:"1", Minor:"23", GitVersion:"v1.23.5", GitCommit:"c285e781331a3785a7f436042c65c5641ce8a9e9", GitTreeState:"clean", BuildDate:"2022-03-16T15:58:47Z", GoVersion:"go1.17.8", Compiler:"gc", Platform:"darwin/amd64"}
+Server Version: version.Info{Major:"1", Minor:"23", GitVersion:"v1.23.5", GitCommit:"c285e781331a3785a7f436042c65c5641ce8a9e9", GitTreeState:"clean", BuildDate:"2022-03-16T15:52:18Z", GoVersion:"go1.17.8", Compiler:"gc", Platform:"linux/amd64"}
+fire@ashutoshhs-MacBook-Air Desktop % 
+fire@ashutoshhs-MacBook-Air Desktop % 
+fire@ashutoshhs-MacBook-Air Desktop % 
+fire@ashutoshhs-MacBook-Air Desktop % kubectl  cluster-info   --kubeconfig  admin.conf.txt 
+Kubernetes control plane is running at https://3.225.69.61:6443
+CoreDNS is running at https://3.225.69.61:6443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+
+To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+
+```
+
+### more request 
+
+```
+kubectl  get  nodes   --kubeconfig  admin.conf.txt 
+NAME            STATUS   ROLES                  AGE    VERSION
+control-plane   Ready    control-plane,master   4h5m   v1.23.5
+minion1         Ready    <none>                 4h2m   v1.23.5
+minion2         Ready    <none>                 4h2m   v1.23.5
+```
+
+### copy auth file in default location 
+
+```
+% cp  admin.conf.txt  ~/.kube/config 
+fire@ashutoshhs-MacBook-Air Desktop % 
+fire@ashutoshhs-MacBook-Air Desktop % 
+fire@ashutoshhs-MacBook-Air Desktop % 
+fire@ashutoshhs-MacBook-Air Desktop % kubectl  get nodes
+NAME            STATUS   ROLES                  AGE    VERSION
+control-plane   Ready    control-plane,master   4h7m   v1.23.5
+minion1         Ready    <none>                 4h4m   v1.23.5
+minion2         Ready    <none>                 4h4m   v1.23.5
+fire@ashutoshhs-MacBook-Air Desktop % 
+fire@ashutoshhs-MacBook-Air Desktop % kubectl  cluster-info                                
+Kubernetes control plane is running at https://3.225.69.61:6443
+CoreDNS is running at https://3.225.69.61:6443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+
+To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+```
+
+
+### ETCD -- brain of k8s 
+
+<img src="etcd.png">
+
+### kube-schedular in master node 
+
+<img src="sch.png">
+
+## Deploy apps in k8s 
+
+<img src="dep.png">
+
+### Intro to POD 
+
+<img src="pod.png">
 
 
