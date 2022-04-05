@@ -295,3 +295,59 @@ fire@ashutoshhs-MacBook-Air containers_apps % kubectl  get po -o wide
 NAME            READY   STATUS    RESTARTS   AGE   IP             NODE      NOMINATED NODE   READINESS GATES
 ashupod-007     1/1     Running   0          5s    192.168.34.5   minion1   <none>           <none>
 ```
+
+### deleting all the pods 
+
+```
+ kubectl delete pod --all
+pod "ashupod-007" deleted
+pod "natarajanpod-007" deleted
+pod "rameshpod-007" deleted
+pod "ronipod-043" deleted
+
+
+```
+
+### auto generate yaml 
+
+```
+kubectl run ashupod2  --image=nginx --port 80 --dry-run=client  -o yaml 
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: ashupod2
+  name: ashupod2
+spec:
+  containers:
+  - image: nginx
+    name: ashupod2
+    ports:
+    - containerPort: 80
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
+fire@ashutoshhs-MacBook-Air containers_apps % kubectl run ashupod2  --image=nginx --port 80 --dry-run=client  -o yaml  >ashupod2.yaml
+
+```
+
+### deploy file 
+
+```
+kubectl create  -f  ashupod2.yaml 
+pod/ashupod2 created
+fire@ashutoshhs-MacBook-Air containers_apps % kubectl get po
+NAME            READY   STATUS    RESTARTS   AGE
+ashupod2        1/1     Running   0          4s
+
+```
+
+### deleting pod using file 
+
+```
+ kubectl delete  -f  ashupod2.yaml
+pod "ashupod2" deleted
+```
+
