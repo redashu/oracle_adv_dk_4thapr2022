@@ -159,3 +159,8 @@ kubernetes     ClusterIP   10.96.0.1       <none>        443/TCP          163m
 
 ```
 
+### External LB and DNs 
+
+<img src="lbdns.png">
+
+
