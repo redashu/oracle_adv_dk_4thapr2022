@@ -4,6 +4,7 @@ metadata: # info about resouces like name
   name: ashupod-007  # name of my POd 
 spec: # info about your container app 
   nodeName: minion1 # static scheduling 
+  
   containers:
   - name: ashuc1 # name of container inside pod 
     image: nginx # name of image from Docker hub 
