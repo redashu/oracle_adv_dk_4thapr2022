@@ -255,3 +255,126 @@ NAME              TYPE       CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE
 service/ashulb1   NodePort   10.98.73.148   <none>        1234:30647/TCP   6s
 ```
 
+### Intro to deployment 
+
+<img src="deploy.png">
+
+### creating deployment 
+
+```
+kubectl  create  deployment ashudep1  --image=nginx --port 80 --dry-run=client -oyaml  >ashudeployment.yaml
+```
+
+### into to secret in k8s 
+
+<img src="secret.png">
+
+### creating secret in personal namespace 
+
+```
+kubectl create secret docker-registry  myimgsec  --docker-server=phx.ocir.io  --docker-username="axmb.com" --docker-password="TG[2Vm"  --dry-run=client -oyaml  >secret.yaml
+```
+
+### secret --
+
+```
+
+fire@ashutoshhs-MacBook-Air containers_apps % kubectl  get secret 
+NAME                  TYPE                                  DATA   AGE
+default-token-lh76q   kubernetes.io/service-account-token   3      85m
+myimgsec              kubernetes.io/dockerconfigjson        1      4s
+fire@ashutoshhs-MacBook-Air containers_apps % 
+```
+
+### redeployment of deploy file 
+
+```
+kubectl replace -f ashudeployment.yaml --force
+deployment.apps "ashudep1" deleted
+deployment.apps/ashudep1 replaced
+fire@ashutoshhs-MacBook-Air containers_apps % kubectl  get  deploy
+NAME       READY   UP-TO-DATE   AVAILABLE   AGE
+ashudep1   1/1     1            1           15s
+fire@ashutoshhs-MacBook-Air containers_apps % kubectl  get   po   
+NAME                        READY   STATUS    RESTARTS   AGE
+ashudep1-66865d5f79-pmqng   1/1     Running   0          22s
+
+```
+
+### using expose to create service 
+
+```
+kubectl  get deploy 
+NAME       READY   UP-TO-DATE   AVAILABLE   AGE
+ashudep1   1/1     1            1           27m
+fire@ashutoshhs-MacBook-Air containers_apps % kubectl  expose  deployment  ashudep1  --type NodePort         --port  1234 --target-port 80  --name  ashulb111 
+service/ashulb111 exposed
+fire@ashutoshhs-MacBook-Air containers_apps % kubectl get svc 
+NAME        TYPE       CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE
+ashulb111   NodePort   10.97.71.134   <none>        1234:31444/TCP   6s
+```
+
+### scaling pod horizentally using deployment 
+
+<img src="hscale.png">
+
+### manual scaling 
+
+```
+kubectl scale deployment  ashudep1  --replicas=3
+
+ % kubectl  get  pods 
+NAME                        READY   STATUS    RESTARTS   AGE
+ashudep1-66865d5f79-rb7xj   1/1     Running   0          10m
+ashudep1-66865d5f79-rgt82   1/1     Running   0          18s
+ashudep1-66865d5f79-v2qng   1/1     Running   0          18s
+fire@ashutoshhs-MacBook-Air containers_apps % kubectl  get  deployment                        
+NAME       READY   UP-TO-DATE   AVAILABLE   AGE
+ashudep1   3/3     3            3           37m
+fire@ashutoshhs-MacBook-Air containers_apps % 
+```
+
+### HPA in k8s 
+
+<img src="hpa.png">
+
+### limit resource using cgroup 
+
+<img src="limits.png">
+
+### HPA 
+
+```
+kubectl  autoscale  deployment ashudep1  --cpu-percent=70         --min=3  --max=20 
+horizontalpodautoscaler.autoscaling/ashudep1 autoscaled
+fire@ashutoshhs-MacBook-Air containers_apps % kubectl  get deployNAME       READY   UP-TO-DATE   AVAILABLE   AGE
+ashudep1   1/1     1            1           7m2s
+fire@ashutoshhs-MacBook-Air containers_apps % kubectl  get deploy
+NAME       READY   UP-TO-DATE   AVAILABLE   AGE
+ashudep1   3/3     3            3           7m20s
+fire@ashutoshhs-MacBook-Air containers_apps % kubectl  get  po
+NAME                        READY   STATUS    RESTARTS   AGE
+ashudep1-7795459dbf-44567   1/1     Running   0          21s
+ashudep1-7795459dbf-lktwl   1/1     Running   0          21s
+ashudep1-7795459dbf-q72lh   1/1     Running   0          7m26s
+```
+
+### hpa 
+
+```
+1136  kubectl  autoscale  deployment ashudep1  --cpu-percent=70         --min=3  --max=20 
+ 1137  kubectl  get deploy
+ 1138  kubectl  get deploy
+ 1139  kubectl  get  po
+ 1140  kubectl get hpa
+fire@ashutoshhs-MacBook-Air containers_apps % kubectl  scale deployment ashudep1 --replicas=2
+deployment.apps/ashudep1 scaled
+fire@ashutoshhs-MacBook-Air containers_apps % kubectl  get deploy
+NAME       READY   UP-TO-DATE   AVAILABLE   AGE
+ashudep1   3/3     3            3           9m44s
+fire@ashutoshhs-MacBook-Air containers_apps % kubectl  get po    
+NAME                        READY   STATUS    RESTARTS   AGE
+ashudep1-7795459dbf-44567   1/1     Running   0          2m44s
+ashudep1-7795459dbf-lxkvd   1/1     Running   0          14s
+ashudep1-7795459dbf-q72lh   1/1     Running   0          9m49s
+```
