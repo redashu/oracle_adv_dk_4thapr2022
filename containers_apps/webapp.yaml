@@ -2,8 +2,8 @@ apiVersion: v1
 kind: Pod
 metadata:
   creationTimestamp: null
-  labels:
-    run: ashuweb
+  labels: # is to label pod 
+    x1: ashutoshhapp
   name: ashuweb # name of pod 
 spec:
   containers:
