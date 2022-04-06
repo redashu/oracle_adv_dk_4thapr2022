@@ -78,3 +78,84 @@ Handling connection for 1234
 
 <img src="lb.png">
 
+### Internal LB via Service resource type 
+
+<img src="svc.png">
+
+### Service Internal LB will be using Label to find related POds 
+
+<img src="svc1.png">
+
+### checking and changing label of pods
+
+<img src="label.png">
+
+### label changing methods 
+
+```
+1019  kubectl apply  -f webapp.yaml
+ 1020  kubectl  get pods --show-labels
+ 1021  history
+ 1022  kubectl label 
+ 1023  kubectl label pod ashuweb  x2=helloashuapp
+ 1024  kubectl  get pods --show-labels
+fire@ashutoshhs-MacBook-Air containers_apps % kubectl  replace -f webapp.yaml --force
+pod "ashuweb" deleted
+pod/ashuweb replaced
+
+```
+
+### checking label of pod
+
+```
+% kubectl  get pods --show-labels
+NAME           READY   STATUS        RESTARTS   AGE     LABELS
+akshweb        1/1     Running       0          68m     run=ashuweb
+ashuweb        1/1     Running       0          2m44s   x1=ashutoshhapp
+
+```
+
+### type of service 
+### Note: every type of service will be creating Internal LB 
+
+<img src="stype.png">
+
+## NodePort
+
+```
+
+fire@ashutoshhs-MacBook-Air containers_apps % kubectl create  service 
+Create a service using a specified subcommand.
+
+Aliases:
+service, svc
+
+Available Commands:
+  clusterip    Create a ClusterIP service
+  externalname Create an ExternalName service
+  loadbalancer Create a LoadBalancer service
+  nodeport     Create a NodePort service
+
+
+```
+
+### Understanding service creating 
+
+<img src="sc.png">
+
+### selector to pod label 
+
+<img src="labeladd.png">
+
+### service deploy 
+
+```
+ kubectl create  -f  ashulb1.yaml
+ fire@ashutoshhs-MacBook-Air containers_apps % kubectl  get svc
+NAME           TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+ashulb1        NodePort    10.99.145.39    <none>        1234:30257/TCP   10m
+devlbaas       NodePort    10.97.67.51     <none>        1234:31583/TCP   9m4s
+kubernetes     ClusterIP   10.96.0.1       <none>        443/TCP          163m
+
+```
+
