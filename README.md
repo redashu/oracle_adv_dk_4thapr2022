@@ -163,4 +163,95 @@ kubernetes     ClusterIP   10.96.0.1       <none>        443/TCP          163m
 
 <img src="lbdns.png">
 
+### Nodeport Vs loadbalancer service 
+
+<img src="nplb.png">
+
+### creating LB type service 
+
+```
+kubectl  create  service  loadbalancer  ashusvc2 --tcp 1234:80  --dry-run=client -oyaml >ashulb2.yaml 
+ 1060  history
+ 1061  kubectl get  po --show-labels
+ 1062  kubectl create -f ashulb2.yaml 
+
+```
+
+### checking service 
+
+```
+
+fire@ashutoshhs-MacBook-Air containers_apps % kubectl  get svc
+NAME           TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+ashulb1        NodePort       10.99.145.39     <none>        1234:30257/TCP   129m
+ashusvc2       LoadBalancer   10.111.106.212   <pending>     1234:31267/TCP   50s
+```
+
+## namespace concept 
+
+<img src="ns.png">
+
+### checking ns
+
+```
+ubectl  get ns
+NAME                   STATUS   AGE
+default                Active   30h
+kube-node-lease        Active   30h
+kube-public            Active   30h
+kube-system            Active   30h
+kubernetes-dashboard   Active   30h
+```
+
+### kube-system namespace 
+
+```
+kubectl   get  po  -n kube-system 
+NAME                                       READY   STATUS    RESTARTS      AGE
+calico-kube-controllers-56fcbf9d6b-x64tp   1/1     Running   1 (21h ago)   30h
+calico-node-cx5bd                          1/1     Running   1 (21h ago)   30h
+calico-node-wh647                          1/1     Running   1 (21h ago)   30h
+calico-node-zhzl8                          1/1     Running   1 (21h ago)   30h
+coredns-64897985d-62wnk                    1/1     Running
+```
+
+### creating namespace 
+
+```
+pps fire$ kubectl  create  namespace  ashu-project  
+namespace/ashu-project created
+ashutoshhs-MacBook-Air:containers_apps fire$ kubectl  get ns
+NAME                   STATUS   AGE
+ashu-project           Active   3s
+
+```
+
+### setting and checking default namespace 
+
+```
+ kubectl   get  pods
+No resources found in default namespace.
+ashutoshhs-MacBook-Air:containers_apps fire$ kubectl   config set-context  --current --namespace=ashu-project 
+Context "kubernetes-admin@kubernetes" modified.
+ashutoshhs-MacBook-Air:containers_apps fire$ kubectl   config   get-contexts 
+CURRENT   NAME                          CLUSTER      AUTHINFO           NAMESPACE
+*         kubernetes-admin@kubernetes   kubernetes   kubernetes-admin   ashu-project
+ashutoshhs-MacBook-Air:containers_apps fire$ 
+ashutoshhs-MacBook-Air:containers_apps fire$ kubectl   get  pods
+No resources found in ashu-project namespace.
+```
+
+### deploy data in NS 
+
+```
+ kubectl   create  -f webapp.yaml   -f  ashulb1.yaml  
+pod/ashuweb created
+service/ashulb1 created
+ashutoshhs-MacBook-Air:containers_apps fire$ kubectl   get  pod,svc
+NAME          READY   STATUS    RESTARTS   AGE
+pod/ashuweb   1/1     Running   0          5s
+
+NAME              TYPE       CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE
+service/ashulb1   NodePort   10.98.73.148   <none>        1234:30647/TCP   6s
+```
 
