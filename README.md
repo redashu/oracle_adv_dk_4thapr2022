@@ -94,6 +94,29 @@ spec:
 status: {}
 
 ```
+### implement HPA in deployment 
+
+```
+kubectl  autoscale deployment  ashudep1  --cpu-percent=5  --min=2  --max=10 --dry-run=client -oyaml   >hpa.yaml
+fire@ashutoshhs-MacBook-Air containers_apps % kubectl apply -f hpa.yaml 
+horizontalpodautoscaler.autoscaling/ashudep1 created
+fire@ashutoshhs-MacBook-Air containers_apps % kubectl get  hpa
+NAME       REFERENCE             TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+ashudep1   Deployment/ashudep1   2%/5%     2         10        2          47s
+```
+
+### random attacker pod 
+
+```
+ kubectl  run -it  --rm   attacker  --image=busybox
+```
+
+### command to run inside pod 
+
+```
+while sleep 0.01 ; do  wget -q -O-  http://ashulb1:1234 ;  done
+```
+
 
 
 
