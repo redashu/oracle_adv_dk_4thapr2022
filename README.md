@@ -281,4 +281,8 @@ NAME     TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE
 ashudb   ClusterIP   10.104.5.219   <none>        3306/TCP   5s
 ```
 
+### create webapplication --
+```
+kubectl create deployment ashuweb  --image=wordpress:4.8-apache  --port 80 --dry-run=client -oyaml 
+```
 
