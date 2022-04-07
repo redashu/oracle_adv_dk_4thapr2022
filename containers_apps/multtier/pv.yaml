@@ -1,0 +1,13 @@
+apiVersion: v1 
+kind: PersistentVolume
+metadata:
+  name: ashupv-007 
+spec: 
+ nfs: # source of storage 
+  server: 172.31.12.7 # ip address of nfs server
+  path: /db/ashu # location on NFS server 
+ capacity: # requesting default size 
+  storage: 2Gi # 1 2 , 3 7 
+ accessModes: 
+ - ReadWriteMany  # RWO(only bound with single minion) , RWM(every minion can bound) , ROM 
+ storageClassName:  self-managed
