@@ -200,6 +200,70 @@ Thu Apr  7 06:55:44 UTC 2022
 
 ```
 
+### APp deployment with webpp + db + storage 
+
+<img src="pv.png">
+
+## Understanding PV and PVC 
+
+<img src="pvc.png">
+
+## storage team will configure NFS server
+
+```
+[root@ip-172-31-12-7 ~]# for  i  in  ashu  natraj akshay dev ramesh rohit roni 
+> do
+> mkdir -p  /db/$i 
+> echo "/db/$i  *(rw,no_root_squash)" >>/etc/exports
+> done 
+[root@ip-172-31-12-7 ~]# chmod 777 /db/ -R
+[root@ip-172-31-12-7 ~]# 
+[root@ip-172-31-12-7 ~]# vim /etc/exports
+[root@ip-172-31-12-7 ~]# systemctl restart nfs-server
+[root@ip-172-31-12-7 ~]# exportfs  -r
+[root@ip-172-31-12-7 ~]# exportfs  -v
+/db/ashu      	<world>(rw,sync,wdelay,hide,no_subtree_check,sec=sys,secure,no_root_squash,no_all_squash)
+/db/roni      	<world>(rw,sync,wdelay,hide,no_subtree_check,sec=sys,secure,no_root_squash,no_all_squash)
+/db/natraj    	<world>(rw,sync,wdelay,hide,no_subtree_check,sec=sys,secure,no_root_squash,no_all_squash)
+/db/akshay    	<world>(rw,sync,wdelay,hide,no_subtree_check,sec=sys,secure,no_root_squash,no_all_squash)
+/db/dev       	<world>(rw,sync,wdelay,hide,no_subtree_check,sec=sys,secure,no_root_squash,no_all_squash)
+/db/ramesh    	<world>(rw,sync,wdelay,hide,no_subtree_check,sec=sys,secure,no_root_squash,no_all_squash)
+/db/rohit     	<world>(rw,sync,wdelay,hide,no_subtree_check,sec=sys,secure,no_root_squash,no_all_squash)
+```
+
+
+### creating pv and pvc 
+
+```
+ % kubectl apply -f multtier
+persistentvolume/ashupv-007 unchanged
+persistentvolumeclaim/ashupvc-fordb created
+fire@ashutoshhs-MacBook-Air containers_apps % kubectl  get pvc
+NAME            STATUS   VOLUME          CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+ashupvc-fordb   Bound    natarajan-007   5Gi        RWX            self-managed   69s
+```
+
+### creating secret to store DB users password 
+
+```
+ kubectl  create  secret  generic  dbpass --from-literal           mypass="Oracle098#" --dry-run=client -oyaml
+ 
+  kubectl apply -f multtier 
+secret/dbpass created
+persistentvolume/ashupv-007 unchanged
+persistentvolumeclaim/ashupvc-fordb unchanged
+fire@ashutoshhs-MacBook-Air containers_apps % kubectl  get secret
+NAME                  TYPE                                  DATA   AGE
+dbpass                Opaque                                1      6s
+
+```
+
+### creating DB deployment --
+
+```
+kubectl create deployment  ashudb --image=mysql:5.6  --port 3306  --dry-run=client -oyaml >multtier/dbdep.yaml
+
+```
 
 
 
