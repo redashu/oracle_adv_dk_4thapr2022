@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels: # is to label pod 
+    x1: ashutoshhapp
+  name: ashuweb # name of pod 
+spec:
+  containers:
+  - image: dockerashu/customerapp:30thmarch2022 # image from docker hub 
+    name: ashuweb # name of container 
+    ports: # app port 
+    - containerPort: 80
+    env: # to set / create env variable values 
+    - name: app  # name of env var from docker image 
+      value: webapp3 
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
