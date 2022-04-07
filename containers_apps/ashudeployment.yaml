@@ -24,6 +24,19 @@ spec:
         name: nginx # name of container 
         ports:
         - containerPort: 80
+        readinessProbe: # this is for Minion Kubelet 
+         httpGet: 
+          path: /health.html
+          port: 80 
+         failureThreshold: 1 
+         periodSeconds: 10 
+
+        livenessProbe: # this is for Minion Kubelet 
+         httpGet: 
+          path: /health.html
+          port: 80 
+         failureThreshold: 2
+         periodSeconds: 10
         resources: # limitng vertical scaling in container 
           requests:
             memory: 100M
