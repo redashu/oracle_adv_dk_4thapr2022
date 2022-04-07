@@ -266,5 +266,19 @@ kubectl create deployment  ashudb --image=mysql:5.6  --port 3306  --dry-run=clie
 ```
 
 
+### creating db service 
+
+```
+kubectl expose deploy ashudb  --type ClusterIP --port 3306  --dry-run=client -oyaml >multtier/dbsvc.yaml 
+fire@ashutoshhs-MacBook-Air containers_apps % kubectl apply -f multtier 
+deployment.apps/ashudb configured
+secret/dbpass configured
+service/ashudb created
+persistentvolume/ashupv-007 unchanged
+persistentvolumeclaim/ashupvc-fordb unchanged
+fire@ashutoshhs-MacBook-Air containers_apps % kubectl get svc
+NAME     TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE
+ashudb   ClusterIP   10.104.5.219   <none>        3306/TCP   5s
+```
 
 
