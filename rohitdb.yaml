@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ashudb
+  name: ashudb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ashudb
+  strategy: {}
+  template: # will be used to create PODS 
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: ashudb
+    spec:
+      volumes: # creating volume using pvc 
+      - name: rohitdbvol111 # name of volume 
+        persistentVolumeClaim: # source of storage 
+          claimName: rohitpvc-fordb 
+      containers:
+      - image: mysql:5.6
+        name: mysql
+        ports:
+        - containerPort: 3306
+        env: 
+        - name: MYSQL_ROOT_PASSWORD # 
+          valueFrom:  # calling data from somewhere
+            secretKeyRef: # calling to secret 
+              name: dbpass # name of secret
+              key: mypass # key of secret 
+        volumeMounts: # attaching storage to container from pod 
+        - name: rohitdbvol111 # name of volume created by pod 
+          mountPath: /var/lib/mysql/ # default location where mysql store its data
+        resources: {}
+status: {}
