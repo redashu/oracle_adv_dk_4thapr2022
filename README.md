@@ -169,6 +169,37 @@ If you don't see a command prompt, try pressing enter.
 nameserver 10.96.0.10
 
 ```
+## Storage in k8s 
+
+<img src="st.png">
+
+### storge in more details 
+
+<img src="st.png">
+
+### check pod data
+
+```
+kubectl  get po 
+NAME      READY   STATUS    RESTARTS   AGE
+datagen   1/1     Running   0          74s
+fire@ashutoshhs-MacBook-Air ~ % kubectl  exec -it  datagen -- sh 
+/ # 
+/ # 
+/ # cd  /mnt/
+/mnt # ls
+time.txt
+/mnt # wc -l time.txt 
+4 time.txt
+/mnt # cat  time.txt 
+Thu Apr  7 06:54:14 UTC 2022
+Thu Apr  7 06:54:44 UTC 2022
+Thu Apr  7 06:55:14 UTC 2022
+Thu Apr  7 06:55:44 UTC 2022
+/mnt # exit
+
+```
+
 
 
 
