@@ -117,6 +117,59 @@ ashudep1   Deployment/ashudep1   2%/5%     2         10        2          47s
 while sleep 0.01 ; do  wget -q -O-  http://ashulb1:1234 ;  done
 ```
 
+### DNS inside k8s 
+
+### case1 
+
+```
+% kubectl  run  webapp1  --image=nginx  --port 80 
+pod/webapp1 created
+fire@ashutoshhs-MacBook-Air ~ % kubectl  get  pod 
+NAME      READY   STATUS    RESTARTS   AGE
+webapp1   1/1     Running   0          5s
+fire@ashutoshhs-MacBook-Air ~ % kubectl  expose pod  webapp1 --type ClusterIP --port 80 --target-port 80 --name app1
+service/app1 exposed
+fire@ashutoshhs-MacBook-Air ~ % kubectl  get  svc
+NAME   TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)   AGE
+app1   ClusterIP   10.106.227.146   <none>        80/TCP    5s
+fire@ashutoshhs-MacBook-Air ~ % 
+
+```
+### COREDNS 
+
+<img src="coredns.png">
+
+### DNS close info 
+
+```
+ kubectl  get po -n kube-system 
+NAME                                       READY   STATUS    RESTARTS      AGE
+calico-kube-controllers-56fcbf9d6b-x64tp   1/1     Running   2 (18h ago)   2d4h
+calico-node-cx5bd                          1/1     Running   2 (18h ago)   2d4h
+calico-node-wh647                          1/1     Running   2 (18h ago)   2d4h
+calico-node-zhzl8                          1/1     Running   2 (18h ago)   2d4h
+coredns-64897985d-62wnk                    1/1     Running   2 (18h ago)   2d4h
+coredns-64897985d-brg8m                    1/1     Running   2 (18h ago)   2d4h
+etcd-control-plane                         1/1     Running   2 (18h ago)   2d4h
+kube-apiserver-control-plane               1/1     Running   2 (18h ago)   2d4h
+kube-controller-manager-control-plane      1/1     Running   2 (18h ago)   2d4h
+kube-proxy-4t2js                           1/1     Running   2 (18h ago)   2d4h
+kube-proxy-xtpjq                           1/1     Running   2 (18h ago)   2d4h
+kube-proxy-z5gkz                           1/1     Running   2 (18h ago)   2d4h
+kube-scheduler-control-plane               1/1     Running   2 (18h ago)   2d4h
+metrics-server-5c69db44f5-x78mc            1/1     Running   2 (18h ago)   2d3h
+fire@ashutoshhs-MacBook-Air ~ % kubectl  get svc -n kube-system 
+NAME             TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)                  AGE
+kube-dns         ClusterIP   10.96.0.10     <none>        53/UDP,53/TCP,9153/TCP   2d4h
+metrics-server   ClusterIP   10.104.71.65   <none>        443/TCP                  2d3h
+fire@ashutoshhs-MacBook-Air ~ % kubectl  run -it --rm testing  --image=busybox 
+If you don't see a command prompt, try pressing enter.
+/ # 
+/ # cat  /etc/resolv.conf 
+nameserver 10.96.0.10
+
+```
+
 
 
 
