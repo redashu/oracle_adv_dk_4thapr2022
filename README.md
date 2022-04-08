@@ -239,8 +239,29 @@ fire@ashutoshhs-MacBook-Air containers_apps % kubectl  create  clusterrolebindin
 clusterrolebinding.rbac.authorization.k8s.io/to-project111 created
 fire@ashutoshhs-MacBook-Air containers_apps % 
 
+```
 
+### ingress controller 
+
+<img src="ingress.png">
+
+### to implement ingress rule 
 
 ```
+kubectl  run  webapp1  --image=nginx --port 80 
+pod/webapp1 created
+fire@ashutoshhs-MacBook-Air ~ % kubectl  run  webapp2  --image=httpd --port 80 
+pod/webapp2 created
+fire@ashutoshhs-MacBook-Air ~ % 
+fire@ashutoshhs-MacBook-Air ~ % kubectl  expose pod webapp1  --port 80 --name ashusvc1
+service/ashusvc1 exposed
+fire@ashutoshhs-MacBook-Air ~ % kubectl  expose pod webapp2  --port 80 --name ashusvc2
+service/ashusvc2 exposed
+fire@ashutoshhs-MacBook-Air ~ % kubectl  get  svc
+NAME       TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE
+ashusvc1   ClusterIP   10.100.172.31   <none>        80/TCP    14s
+ashusvc2   ClusterIP   10.107.148.9    <none>        80/TCP    3s
+```
+
 
 
