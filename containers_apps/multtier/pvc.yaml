@@ -1,0 +1,11 @@
+apiVersion: v1 
+kind: PersistentVolumeClaim
+metadata:
+  name: ashupvc-fordb
+spec: 
+  accessModes:
+  - ReadWriteMany 
+  storageClassName: self-managed
+  resources: # requesting size
+    requests:
+      storage: 5Gi 
