@@ -226,4 +226,21 @@ fire@ashutoshhs-MacBook-Air containers_apps % kubectl  get  nodes  --kubeconfig 
 Error from server (Forbidden): nodes is forbidden: User "system:serviceaccount:ashu-developer:project" cannot list resource "nodes" in API group "" at the cluster scope
 ```
 
+### clusterrole binding 
+
+```
+kubectl  create  clusterrole  only-view1  --resource=node --verbs=list   
+error: unknown flag: --verbs
+See 'kubectl create clusterrole --help' for usage.
+fire@ashutoshhs-MacBook-Air containers_apps % kubectl  create  clusterrole  only-view1  --resource=node --verb=list    
+clusterrole.rbac.authorization.k8s.io/only-view1 created
+fire@ashutoshhs-MacBook-Air containers_apps % 
+fire@ashutoshhs-MacBook-Air containers_apps % kubectl  create  clusterrolebinding  to-project111 --clusterrole  only-view1 --serviceaccount=ashu-developer:project 
+clusterrolebinding.rbac.authorization.k8s.io/to-project111 created
+fire@ashutoshhs-MacBook-Air containers_apps % 
+
+
+
+```
+
 
