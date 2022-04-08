@@ -172,4 +172,58 @@ fire@ashutoshhs-MacBook-Air ~ %
 
 
 ```
+### roles in k8s
+
+<img src="roles.png">
+
+### creating roles 
+
+```
+kubectl create role  pod-reader --resource=pod --verb=list  --namespace ashu-developer  --dry-run=client -o yaml 
+```
+
+### 
+
+```
+kubectl apply -f role1.yaml 
+role.rbac.authorization.k8s.io/pod-reader created
+fire@ashutoshhs-MacBook-Air containers_apps % kubectl get roles -n ashu-developer
+NAME         CREATED AT
+pod-reader   2022-04-08T09:12:41Z
+```
+
+### creating rolebinding 
+
+```
+kubectl  create rolebinding bind-to-project  --role pod-reader  --serviceaccount=ashu-developer:project  -n  ashu-developer
+
+===
+ kubectl  get  sa -n  ashu-developer 
+NAME      SECRETS   AGE
+default   1         147m
+project   1         129m
+fire@ashutoshhs-MacBook-Air Desktop % kubectl  get  secret -n  ashu-developer 
+NAME                  TYPE                                  DATA   AGE
+default-token-pds2b   kubernetes.io/service-account-token   3      147m
+project-token-gsdlq   kubernetes.io/service-account-token   3      129m
+fire@ashutoshhs-MacBook-Air Desktop % kubectl  get  role -n  ashu-developer 
+NAME         CREATED AT
+pod-reader   2022-04-08T09:12:41Z
+fire@ashutoshhs-MacBook-Air Desktop % kubectl  get  rolebinding -n  ashu-developer 
+NAME              ROLE              AGE
+bind-to-project   Role/pod-reader   51s
+
+```
+
+### testing 
+
+```
+kubectl  get  pods  --kubeconfig devconf.yaml 
+No resources found in ashu-developer namespace.
+fire@ashutoshhs-MacBook-Air containers_apps % kubectl  get  svc  --kubeconfig devconf.yaml
+Error from server (Forbidden): services is forbidden: User "system:serviceaccount:ashu-developer:project" cannot list resource "services" in API group "" in the namespace "ashu-developer"
+fire@ashutoshhs-MacBook-Air containers_apps % kubectl  get  nodes  --kubeconfig devconf.yaml
+Error from server (Forbidden): nodes is forbidden: User "system:serviceaccount:ashu-developer:project" cannot list resource "nodes" in API group "" at the cluster scope
+```
+
 
