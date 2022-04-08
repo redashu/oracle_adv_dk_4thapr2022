@@ -108,3 +108,68 @@ fire@ashutoshhs-MacBook-Air ~ %
 
 ```
 
+## ROle Base Access control (RBAC)
+
+### users in k8s
+-->. ### cluster users 
+
+<img src="clsuser.png">
+
+### service accounts in k8s 
+
+<img src="sa.png">
+
+### more on service accounts 
+
+```
+kubectl  get  serviceaccount 
+NAME      SECRETS   AGE
+default   1         45h
+fire@ashutoshhs-MacBook-Air ~ % kubectl  get  sa             
+NAME      SECRETS   AGE
+default   1         45h
+fire@ashutoshhs-MacBook-Air ~ % kubectl  get  secret
+NAME                  TYPE                                  DATA   AGE
+dbpass                Opaque                                1      20h
+default-token-lh76q   kubernetes.io/service-account-token   3      45h
+myimgsec              kubernetes.io/dockerconfigjson        1      44h
+fire@ashutoshhs-MacBook-Air ~ % 
+fire@ashutoshhs-MacBook-Air ~ % kubectl  describe secret  default-token-lh76q  
+Name:         default-token-lh76q
+Namespace:    ashu-project
+Labels:       <none>
+Annotations:  kubernetes.io/service-account.name: default
+              kubernetes.io/service-account.uid: f33d82be-f3b1-4d88-80bf-b12ae40854b9
+
+Type:  kubernetes.io/service-account-token
+
+Data
+====
+ca.crt:     1099 bytes
+namespace:  12 bytes
+token:      eyJhbGciOiJSUzI1NiIsImtpZCI6Ims4S2N2S2VsRG4tM0RqbThwM0tjU2ZlTkctcDAySlY1ZWFBUVFqM01MRE0ifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJhc2h1LXByb2plY3QiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlY3JldC5uYW1lIjoiZGVmYXVsdC10b2tlbi1saDc2cSIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50Lm5hbWUiOiJkZWZhdWx0Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQudWlkIjoiZjMzZDgyYmUtZjNiMS00ZDg4LTgwYmYtYjEyYWU0MDg1NGI5Iiwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50OmFzaHUtcHJvamVjdDpkZWZhdWx0In0.a9713lHtLDOZOkE4HVIcJq7SpjUEmsT4orutt9DCLcC_Pz8PbS85pUQqb5hfy0PWXByVSggWtX0nyoaDxS97AI5VqgmfYpf4eKncoj72iQMJpkUxmKXFNoK6manN60vO1P7q53Fnan9dT7xes445_Sp_2UCEyVltz6ov_X75uxrwh80zCEPYx9cL4ThcmRjkXmvhMyUxT6tMdGyLaA1mBCZfphQ7p4YOjyCp8XIzd7ZHUyhBjBXa8
+```
+
+### creating service account 
+
+```
+kubectl  get  sa -n ashu-developer
+NAME      SECRETS   AGE
+default   1         17m
+fire@ashutoshhs-MacBook-Air ~ % kubectl  create   sa  project  -n ashu-developer
+serviceaccount/project created
+fire@ashutoshhs-MacBook-Air ~ % 
+fire@ashutoshhs-MacBook-Air ~ % 
+fire@ashutoshhs-MacBook-Air ~ % kubectl  get  sa -n ashu-developer              
+NAME      SECRETS   AGE
+default   1         17m
+project   1         3s
+fire@ashutoshhs-MacBook-Air ~ % kubectl  get  secret  -n ashu-developer
+NAME                  TYPE                                  DATA   AGE
+default-token-pds2b   kubernetes.io/service-account-token   3      17m
+project-token-gsdlq   kubernetes.io/service-account-token   3      10s
+fire@ashutoshhs-MacBook-Air ~ % 
+
+
+```
+
